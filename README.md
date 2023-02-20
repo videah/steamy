@@ -41,3 +41,4 @@ Options:
 - [bitser](https://github.com/gvx/bitser)
 - [sock.lua](https://github.com/camchenry/sock.lua)
 - [pprint.lua](https://github.com/jagt/pprint.lua)
+- [argparse](https://github.com/mpeterv/argparse)
