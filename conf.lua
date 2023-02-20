@@ -1,7 +1,7 @@
 local argparse = require "libs.argparse"
 
 local parser = argparse("steamy", "Steamy Remote Launcher")
-parser:argument("dir", "Directory that contains main.lua")
+parser:argument("dir", "Directory that contains main.lua"):default("current working directory")
 parser:argument("host", "IP or hostname of a server.\nIn client mode, this is the server to connect to.\nIn server mode, this is the address that will be bound to.\n"):default("127.0.0.1")
 
 parser:option("--port", "Port", "3621")
@@ -15,6 +15,10 @@ if arguments.host == "127.0.0.1" and not arguments.server_mode then
     print("WARNING: You are running in client mode, but are trying to connect to 127.0.0.1 (the default setting).")
     print("This might not be what you want. Pass a different host to connect to a remote server.")
     print("Run with the --help flag to see usage information.\n")
+end
+
+if arguments.dir == "current working directory" then
+    arguments.dir = "."
 end
 
 function love.conf(t)

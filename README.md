@@ -16,12 +16,12 @@ useful on platforms where JIT and FFI are not available.
 # Usage
 ```
 Usage: steamy [--port <port>] [--name <name>] [--upload-only]
-       [--server-mode] [-h] <dir> [<host>]
+       [--server-mode] [-h] [<dir>] [<host>]
 
 Steamy Remote Launcher
 
 Arguments:
-   dir                   Directory that contains main.lua
+   dir                   Directory that contains main.lua (default: current working directory)
    host                  IP or hostname of a server.
                          In client mode, this is the server to connect to.
                          In server mode, this is the address that will be bound to.
