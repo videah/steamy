@@ -48,10 +48,8 @@ if isSend then
     client = sock.newClient(arguments.host, 3621)
     client:setSerialization(bitser.dumps, bitser.loads)
     client:on("connect", function(data)
-        print("BLAH")
         if not gameSent then
             local name = arguments.name or "game"
-
             print("Connected to server!")
             print("Zipping game...")
             lovezip.writeZip(arguments.dir, "steamy_games/" .. name .. ".zip")
