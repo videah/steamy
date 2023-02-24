@@ -88,7 +88,7 @@ function steamy:startServer(host)
         local success = love.filesystem.write("steamy_games/game.zip", data)
         if success then
             print("Game saved!")
-            self.callbacks["download"]()
+            if self.callbacks["download"] then self.callbacks["download"]() end
             client:send("downloaded", true)
         else
             print("Failed to save game!")

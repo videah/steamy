@@ -4,7 +4,7 @@ local lovezip = require "libs.love-zip"
 local steamy = require "."
 local pprint = require "libs.pprint"
 
-local isServer = arguments.server_mode
+local isServer = arguments.boot_menu
 local isSend = not isServer
 
 -- Set to true when we get our first print statement back from the server
@@ -124,7 +124,7 @@ end
 
 if isServer then
     local selected = 1
-    local joystick = love.joystick.getJoysticks()[1]
+    local joystick = love.joystick.getJoysticks()[1] or nil
 
     -- Pretty display stuff
     local bigFont = love.graphics.newFont("assets/AOTFShinGoProRegular.otf", 32)
@@ -182,6 +182,11 @@ if isServer then
 
             love.graphics.setFont(hackFont)
             love.graphics.print("Server running on " .. arguments.host .. ":" .. arguments.port, 32, screenH - 96)
+
+            if arguments.inject then
+                local string = "INJECTION ENABLED"
+                love.graphics.print(string, (screenW - 32) - hackFont:getWidth(string), 32)
+            end
 
             local command = {
                 {1, 1, 1},

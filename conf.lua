@@ -8,7 +8,7 @@ parser:option("--port", "Port", "3621")
 parser:option("--name", "Name of game zip file sent to server.", "game")
 parser:flag("--console", "Reconnect after game boot to listen for print statements.")
 parser:flag("--upload-only", "Don't automatically boot game after uploading.", false)
-parser:flag("--server-mode", "Run in server mode, allows remote users to load/boot games.", false)
+parser:flag("--boot-menu", "Display a boot menu and run a server, allow remote clients to load/boot games.", false)
 parser:flag("--inject", "Inject steamy into games to keep server alive.")
 
 arguments = parser:parse()
@@ -32,7 +32,7 @@ function love.conf(t)
     t.fullscreen = true
 
     -- if we're running in cli mode we disable all graphics modules
-    if not arguments.server_mode then
+    if not arguments.boot_menu then
         t.modules.audio = false
         t.modules.graphics = false
         t.modules.image = false
