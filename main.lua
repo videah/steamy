@@ -7,6 +7,12 @@ local pprint = require "libs.pprint"
 local isServer = arguments.server_mode
 local isSend = not isServer
 
+-- Set to true when we get our first print statement back from the server
+-- when the --console flag is set.
+local firstRemotePrint = false
+
+local isAttemptingReconnect = false
+
 local games = {}
 local games_modified = {}
 local function getGameList()
@@ -42,6 +48,7 @@ if isSend then
     client = sock.newClient(arguments.host, 3621)
     client:setSerialization(bitser.dumps, bitser.loads)
     client:on("connect", function(data)
+        print("BLAH")
         if not gameSent then
             local name = arguments.name or "game"
 
@@ -63,25 +70,35 @@ if isSend then
     end)
 
     client:on("disconnect", function()
-        print("Disconnected, shutting down.")
-        love.event.quit()
+        if not isAttemptingReconnect then
+            print("Disconnected, shutting down.")
+            love.event.quit()
+        else
+            print("Attempting reconnect...")
+            client:connect()
+            print("Connected to server! Now receiving print statements remotely.")
+            print("------------------------------------------------\n")
+            isAttemptingReconnect = false
+        end
     end)
 
     client:on("downloaded", function(success)
         if success then
             print("Game successfully sent, remotely restarting and booting!")
+            if not arguments.upload_only then client:send("boot", "game.zip") end
             if not arguments.console then
-                if not arguments.upload_only then client:send("boot", "game.zip") end
                 love.event.quit()
             else
                 -- TODO: Figure out a way to pass back console input.
                 -- This is currently not working as the server ends up getting disconnected.
                 print("Reconnecting to server for console output...")
-                client:connect()
-                print("Connected to server!")
+
+                isAttemptingReconnect = true
+                if isAttemptingReconnect then client:disconnectLater() end
             end
         end
     end)
+
     client:connect()
 end
 

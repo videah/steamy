@@ -38,12 +38,44 @@ function steamy:bootGame(name)
         package.loaded["libs.love-zip.nativefs"] = nil
         package.loaded["libs.love-zip.nativefs.nativefs"] = nil
 
+        -- We need to start our new server before we boot the game so it's ready ASAP
+        if arguments.inject then
+            _G.__steamy = self
+            _G.__steamy:startServer(self.host)
+
+            -- Patch print to send print statements remotely to clients.
+            local oldPrint = print
+            _G.print = function(...)
+                oldPrint(...)
+                _G.__steamy:print(...)
+            end
+            print("Patched print statements, ready to send remotely to clients.")
+        end
+
         love.init()
+
+        -- Attempt to inject steamy into the running game to keep the server alive
+        -- This makes some assumptions about the users love.update, since if the user
+        -- were to replace the function at any point after boot it would stop working.
+        --
+        -- But who does that?
+        if arguments.inject then
+            if love.update then
+                local userUpdate = love.update
+                love.update = function(dt)
+                    userUpdate(dt)
+                    _G.__steamy:update()
+                end
+                print("Steamy has been injected.")
+            end
+        end
         self.hasBooted = true
+        if _G.__steamy then _G.__steamy.hasBooted = true end
     end
 end
 
 function steamy:startServer(host)
+    self.host = host
     self.server = sock.newServer(host, 3621)
     self.server:setSerialization(bitser.dumps, bitser.loads)
 
@@ -79,6 +111,19 @@ function steamy:load()
             self:bootGame(name)
         end
     end
+end
+
+-- Send a print statement to clients
+function steamy:print(...)
+    local args = {...}
+    local str = ""
+    for i, v in ipairs(args) do
+        str = str .. tostring(v)
+        if i ~= #args then
+            str = str .. "\t"
+        end
+    end
+    self.server:sendToAll("print", str)
 end
 
 function steamy:update()

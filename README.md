@@ -15,8 +15,9 @@ useful on platforms where JIT and FFI are not available.
 
 # Usage
 ```
-Usage: steamy [--port <port>] [--name <name>] [--upload-only]
-       [--server-mode] [-h] [<dir>] [<host>]
+Usage: steamy [--port <port>] [--name <name>] [--console]
+       [--upload-only] [--server-mode] [--inject] [-h] [<dir>]
+       [<host>]
 
 Steamy Remote Launcher
 
@@ -30,8 +31,10 @@ Arguments:
 Options:
    --port <port>         Port (default: 3621)
    --name <name>         Name of game zip file sent to server. (default: game)
+   --console             Reconnect after game boot to listen for print statements.
    --upload-only         Don't automatically boot game after uploading.
    --server-mode         Run in server mode, allows remote users to load/boot games.
+   --inject              Inject steamy into games to keep server alive.
    -h, --help            Show this help message and exit.
 ```
 

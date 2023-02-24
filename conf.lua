@@ -6,9 +6,10 @@ parser:argument("host", "IP or hostname of a server.\nIn client mode, this is th
 
 parser:option("--port", "Port", "3621")
 parser:option("--name", "Name of game zip file sent to server.", "game")
---parser:flag("--console", "Reconnect after game boot to listen for print statements.")
+parser:flag("--console", "Reconnect after game boot to listen for print statements.")
 parser:flag("--upload-only", "Don't automatically boot game after uploading.", false)
 parser:flag("--server-mode", "Run in server mode, allows remote users to load/boot games.", false)
+parser:flag("--inject", "Inject steamy into games to keep server alive.")
 
 arguments = parser:parse()
 if arguments.host == "127.0.0.1" and not arguments.server_mode then
