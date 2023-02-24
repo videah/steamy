@@ -89,8 +89,6 @@ if isSend then
             if not arguments.console then
                 love.event.quit()
             else
-                -- TODO: Figure out a way to pass back console input.
-                -- This is currently not working as the server ends up getting disconnected.
                 print("Reconnecting to server for console output...")
 
                 isAttemptingReconnect = true
