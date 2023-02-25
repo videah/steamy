@@ -64,6 +64,8 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [build-core, build-linux]
     steps:
       - name: Download Artifacts
@@ -72,7 +74,5 @@ jobs:
           path: ${{ env.OUTPUT_FOLDER }}
       - name: Create Release
         uses: ncipollo/release-action@v1
-        permissions:
-          contents: write
         with:
           artifacts: ${{ env.OUTPUT_FOLDER }}
