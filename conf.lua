@@ -28,8 +28,6 @@ function love.conf(t)
     t.window.width = 1280
     t.window.height = 800
     t.gammacorrect = true
-    t.vsync = true
-    t.fullscreen = true
 
     -- if we're running in cli mode we disable all graphics modules
     if not arguments.boot_menu then
