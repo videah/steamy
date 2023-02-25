@@ -1,0 +1,63 @@
+name: steamy-build
+
+env:
+  CORE_LOVE_PACKAGE_PATH: ./steamy.love
+  CORE_LOVE_ARTIFACT_NAME: core_steamy_package
+  PRODUCT_NAME: steamy
+  BUNDLE_ID: net.videah.steamy
+  DESCRIPTION: "Videah's Steamy Remote LÖVE Launcher"
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build-core:
+    runs-on: ubuntu-latest
+    env:
+      OUTPUT_FOLDER: ./build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build core love package
+        uses: love-actions/love-actions-core@v1
+        with:
+          build-list: ./assets/ ./libs/ ./conf.lua ./main.lua ./init.lua
+          package-path: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+      - name: Upload core love package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+          path: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+
+  build-linux:
+    runs-on: ubuntu-latest
+    needs: [build-core, auto-test]
+    env:
+      OUTPUT_FOLDER: ./build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      # Download core love package here
+      - name: Download core love package
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+      - name: Build Linux packages
+        id: build-packages
+        uses: love-actions/love-actions-linux@v1
+        with:
+          app-name: ${{ env.PRODUCT_NAME }}
+          bundle-id: ${{ env.BUNDLE_ID }}
+          description: ${{ env.DESCRIPTION }}
+          version-string: "1.0.0"
+          love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+          product-name: ${{ env.PRODUCT_NAME }}
+          output-folder: ${{ env.OUTPUT_FOLDER }}
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ needs.get-info.outputs.base-name }}_Linux_AppImage
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}.AppImage
