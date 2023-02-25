@@ -3,9 +3,11 @@ name: steamy-build
 env:
   CORE_LOVE_PACKAGE_PATH: ./steamy.love
   CORE_LOVE_ARTIFACT_NAME: core_steamy_package
+  LINUX_LOVE_ARTIFACT_NAME: Steamy_Linux_AppImage
   PRODUCT_NAME: steamy
   BUNDLE_ID: net.videah.steamy
   DESCRIPTION: "Videah's Steamy Remote LÖVE Launcher"
+  OUTPUT_FOLDER: ./build
 
 on:
   push:
@@ -14,8 +16,6 @@ on:
 jobs:
   build-core:
     runs-on: ubuntu-latest
-    env:
-      OUTPUT_FOLDER: ./build
     steps:
       - uses: actions/checkout@v3
         with:
@@ -34,8 +34,6 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     needs: [build-core]
-    env:
-      OUTPUT_FOLDER: ./build
     steps:
       - uses: actions/checkout@v3
         with:
@@ -60,5 +58,18 @@ jobs:
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ needs.get-info.outputs.base-name }}_Linux_AppImage
+          name: ${{ env.LINUX_LOVE_ARTIFACT_NAME }}
           path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}.AppImage
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-core, build-linux]
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ${{ env.OUTPUT_FOLDER }}
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: ${{ env.OUTPUT_FOLDER }}
