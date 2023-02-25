@@ -51,7 +51,7 @@ jobs:
           app-name: ${{ env.PRODUCT_NAME }}
           bundle-id: ${{ env.BUNDLE_ID }}
           description: ${{ env.DESCRIPTION }}
-          version-string: "1.0.0"
+          version-string: "1.0.1"
           icon-path: ./assets/icon.png
           love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
           product-name: ${{ env.PRODUCT_NAME }}
