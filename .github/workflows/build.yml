@@ -33,7 +33,7 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
-    needs: [build-core, auto-test]
+    needs: [build-core]
     env:
       OUTPUT_FOLDER: ./build
     steps:
