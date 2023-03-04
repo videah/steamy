@@ -75,4 +75,4 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ${{ env.OUTPUT_FOLDER }}/*
+          artifacts: ${{ env.OUTPUT_FOLDER }}/*/*
